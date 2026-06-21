@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAD2 — Study Dashboard</title>
+<style>
+  :root {
+    --bg: #0a0c14;
+    --card: #131620;
+    --card2: #1a1d2b;
+    --accent: #6c63ff;
+    --accent2: #00d4aa;
+    --accent3: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: #1e2235;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    padding: 20px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 38px; height: 38px; background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.85rem; color: #fff;
+  }
+  .logo-text { font-weight: 700; font-size: 1rem; }
+  .logo-text span { color: var(--muted); font-weight: 400; font-size: 0.85rem; margin-left: 8px; }
+  .header-right { text-align: right; }
+  .header-right .name { font-weight: 700; font-size: 0.95rem; }
+  .header-right .links { font-size: 0.78rem; margin-top: 3px; }
+  .header-right .links a { color: var(--accent); text-decoration: none; }
+  .header-right .links a:hover { text-decoration: underline; }
+
+  /* HERO */
+  .hero {
+    padding: 80px 48px 60px;
+    text-align: center;
+    background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(108,99,255,0.12) 0%, transparent 70%);
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(108,99,255,0.12); border: 1px solid rgba(108,99,255,0.25);
+    border-radius: 20px; padding: 5px 14px; font-size: 0.78rem;
+    color: var(--accent); font-weight: 600; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: 3rem; font-weight: 900; letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero h1 span { background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; }
+  .hero .subtitle { color: var(--muted); font-size: 1.05rem; margin-top: 12px; line-height: 1.6; }
+  .hero .course-info {
+    display: inline-flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center;
+    margin-top: 30px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 28px; font-size: 0.85rem; color: var(--muted);
+  }
+  .hero .course-info strong { color: var(--text); }
+
+  /* STATS */
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    max-width: 900px; margin: 40px auto 0; padding: 0 48px;
+  }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; text-align: center;
+  }
+  .stat-card .val { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .stat-card .label { color: var(--muted); font-size: 0.78rem; margin-top: 4px; }
+
+  /* SECTION */
+  .section { max-width: 960px; margin: 60px auto 0; padding: 0 48px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .section-icon { font-size: 1.2rem; }
+  .section-title { font-size: 1.3rem; font-weight: 800; }
+  .section-title span { color: var(--muted); font-weight: 400; font-size: 0.9rem; margin-left: 8px; }
+
+  /* WEEK CARDS */
+  .weeks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .week-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    overflow: hidden; transition: transform 0.2s, border-color 0.2s;
+    text-decoration: none; display: block;
+  }
+  .week-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .week-card.w2:hover { border-color: var(--accent2); }
+
+  .week-card-top {
+    padding: 28px 28px 20px;
+    background: linear-gradient(135deg, rgba(108,99,255,0.12) 0%, transparent 70%);
+    position: relative;
+  }
+  .week-card.w2 .week-card-top {
+    background: linear-gradient(135deg, rgba(0,212,170,0.1) 0%, transparent 70%);
+  }
+  .week-badge {
+    display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 12px;
+    background: var(--accent); color: #fff;
+  }
+  .week-card.w2 .week-badge { background: var(--accent2); color: #000; }
+  .week-card-top h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+  .week-card-top p { color: var(--muted); font-size: 0.88rem; }
+
+  .week-card-lectures { padding: 20px 28px; border-top: 1px solid var(--border); }
+  .lecture-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+  .lecture-list li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.85rem; color: var(--muted);
+  }
+  .lecture-list li .lnum {
+    background: rgba(108,99,255,0.15); color: var(--accent);
+    font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 5px;
+    white-space: nowrap;
+  }
+  .week-card.w2 .lecture-list li .lnum { background: rgba(0,212,170,0.12); color: var(--accent2); }
+
+  .open-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: #fff;
+    padding: 10px 20px; border-radius: 8px;
+    font-size: 0.88rem; font-weight: 600; text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .week-card.w2 .open-btn { background: var(--accent2); color: #000; }
+  .open-btn:hover { opacity: 0.85; }
+
+  /* TOPICS TABLE */
+  .topics-section { max-width: 960px; margin: 50px auto 0; padding: 0 48px; }
+  .topics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .topic-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px;
+  }
+  .topic-card h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 14px; }
+  .topic-card.w2 h3 { color: var(--accent2); }
+  .tag-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    background: rgba(108,99,255,0.1); border: 1px solid rgba(108,99,255,0.2);
+    color: var(--text); font-size: 0.78rem; padding: 3px 10px; border-radius: 20px;
+  }
+  .topic-card.w2 .tag { background: rgba(0,212,170,0.08); border-color: rgba(0,212,170,0.2); }
+
+  /* TIPS */
+  .tips-section { max-width: 960px; margin: 50px auto 0; padding: 0 48px; }
+  .tips-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .tip-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+  }
+  .tip-icon { font-size: 1.5rem; margin-bottom: 10px; }
+  .tip-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+  .tip-card p { font-size: 0.83rem; color: var(--muted); line-height: 1.5; }
+
+  /* FOOTER */
+  footer {
+    max-width: 960px; margin: 60px auto 0; padding: 30px 48px 48px;
+    border-top: 1px solid var(--border); text-align: center;
+    color: var(--muted); font-size: 0.85rem;
+  }
+  footer strong { color: var(--text); }
+  footer a { color: var(--accent2); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .footer-links { display: flex; justify-content: center; gap: 24px; margin-top: 10px; }
+
+  @media (max-width: 700px) {
+    .weeks-grid, .topics-grid, .tips-grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .hero h1 { font-size: 2rem; }
+    .hero, .section, .topics-section, .tips-section { padding-left: 20px; padding-right: 20px; }
+    .header { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">M2</div>
+    <div class="logo-text">MAD2 <span>IIT Madras · BS Degree</span></div>
+  </div>
+  <div class="header-right">
+    <div class="name">Yash Upadhyay</div>
+    <div class="links">
+      <a href="https://linkedin.com/in/yashupadhyay-yashord" target="_blank">LinkedIn</a>
+      &nbsp;·&nbsp;
+      <a href="https://instagram.com/yashord_" target="_blank">Instagram</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">📚 Study Dashboard</div>
+  <h1>Modern Application<br><span>Development 2</span></h1>
+  <p class="subtitle">lectures-based study notes · Interactive quizzes · Assignment-ready content</p>
+  <div class="course-info">
+    <span><strong>Instructors:</strong> Prof. Thejesh G N & Prof. Nitin Chandrachoodan</span>
+    <span><strong>Stack:</strong> JavaScript + Vue.js</span>
+    <span><strong>Format:</strong> 6 lectures/week</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-card">
+    <div class="val">2</div>
+    <div class="label">Weeks covered</div>
+  </div>
+  <div class="stat-card">
+    <div class="val">12</div>
+    <div class="label">Lectures transcribed</div>
+  </div>
+  <div class="stat-card">
+    <div class="val">20</div>
+    <div class="label">Quiz questions</div>
+  </div>
+  <div class="stat-card">
+    <div class="val">∞</div>
+    <div class="label">Concepts to master</div>
+  </div>
+</div>
+
+
+
+<!-- WEEKS -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-icon">📖</span>
+    <span class="section-title">Week Notes <span>· Click to open</span></span>
+  </div>
+  <div class="weeks-grid">
+
+    <!-- Week 1 -->
+    <a class="week-card w1" href="week1_notes.html">
+      <div class="week-card-top">
+        <div class="week-badge">Week 1</div>
+        <h2>JavaScript Fundamentals</h2>
+        <p>MAD1 review, JS history, syntax, variables, control flow, functions & DOM</p>
+      </div>
+      <div class="week-card-lectures">
+        <ul class="lecture-list">
+          <li><span class="lnum">L1</span> MAD1 Review & What MAD2 Covers</li>
+          <li><span class="lnum">L2</span> JavaScript Origins & ECMAScript History</li>
+          <li><span class="lnum">L3</span> Syntax, Data Types & typeof</li>
+          <li><span class="lnum">L4</span> var vs let vs const</li>
+          <li><span class="lnum">L5</span> Control Flow & 3 Function Styles</li>
+          <li><span class="lnum">L6</span> DOM API — getElementById, addEventListener</li>
+        </ul>
+        <span class="open-btn">Open Notes →</span>
+      </div>
+    </a>
+
+    <!-- Week 2 -->
+    <a class="week-card w2" href="week2_notes.html">
+      <div class="week-card-top">
+        <div class="week-badge">Week 2</div>
+        <h2>Advanced JavaScript</h2>
+        <p>Arrays, modules, prototypes, classes, async/await, event loop & JSON</p>
+      </div>
+      <div class="week-card-lectures">
+        <ul class="lecture-list">
+          <li><span class="lnum">L1</span> Arrays, Iterables & Higher-Order Functions</li>
+          <li><span class="lnum">L2</span> Iteration, Spread & Destructuring</li>
+          <li><span class="lnum">L3</span> Modules (import/export) & Objects</li>
+          <li><span class="lnum">L4</span> Getters, Setters, Prototypes & Classes</li>
+          <li><span class="lnum">L5</span> Async, Callbacks, Promises & Event Loop</li>
+          <li><span class="lnum">L6</span> JSON — stringify, parse & REST APIs</li>
+        </ul>
+        <span class="open-btn">Open Notes →</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- TOPICS AT A GLANCE -->
+<div class="topics-section">
+  <div class="section-header">
+    <span class="section-icon">🏷️</span>
+    <span class="section-title">Key Topics at a Glance</span>
+  </div>
+  <div class="topics-grid">
+    <div class="topic-card">
+      <h3>Week 1 Topics</h3>
+      <div class="tag-grid">
+        <span class="tag">var/let/const</span>
+        <span class="tag">typeof quirks</span>
+        <span class="tag">null vs undefined</span>
+        <span class="tag">Arrow functions</span>
+        <span class="tag">for...in vs for...of</span>
+        <span class="tag">Hoisting</span>
+        <span class="tag">DOM API</span>
+        <span class="tag">addEventListener</span>
+        <span class="tag">innerHTML</span>
+        <span class="tag">setTimeout</span>
+        <span class="tag">ECMAScript versions</span>
+        <span class="tag">Semicolons (ASI)</span>
+      </div>
+    </div>
+    <div class="topic-card w2">
+      <h3>Week 2 Topics</h3>
+      <div class="tag-grid">
+        <span class="tag">map/filter/reduce</span>
+        <span class="tag">Destructuring</span>
+        <span class="tag">Spread operator</span>
+        <span class="tag">ES6 Modules</span>
+        <span class="tag">import/export</span>
+        <span class="tag">Prototypes</span>
+        <span class="tag">Classes & extends</span>
+        <span class="tag">call/apply/bind</span>
+        <span class="tag">Event Loop</span>
+        <span class="tag">Promises</span>
+        <span class="tag">async/await</span>
+        <span class="tag">JSON.stringify</span>
+      </div>
+    </div>
+    <div class="topic-card">
+      <h3>Quick Quiz</h3>
+      <div class="tag-grid">
+        <span class="tag">End of week</span>
+        <span class="tag">10 questions</span>
+        <span class="tag">Recall check</span>
+        <span class="tag">No notes first</span>
+        <span class="tag">Build confidence</span>
+      </div>
+      <p style="margin-top: 12px; color: #cfd8ff; line-height: 1.6;">Take a quick quiz at the end of each week to test your understanding before moving on.</p>
+    </div>
+  </div>
+</div>
+
+<!-- STUDY TIPS -->
+<div class="tips-section">
+  <div class="section-header">
+    <span class="section-icon">💡</span>
+    <span class="section-title">Study Tips</span>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🎯</div>
+      <h4>Focus on Quirks</h4>
+      <p>Graded assignments love JS quirks — <code>typeof null === "object"</code>, default <code>.sort()</code> on numbers, <code>var</code> leaking out of blocks.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💻</div>
+      <h4>Code in Browser Console</h4>
+      <p>Open DevTools → Console and test every code snippet you read. Typing it yourself beats reading it 3x over.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🧠</div>
+      <h4>Take Each Quiz</h4>
+      <p>Every notes file has a 10-question quiz at the end. Answer without looking — checking recall is better than re-reading.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔗</div>
+      <h4>Connect the Concepts</h4>
+      <p>Async → Event Loop → Promises → async/await is one logical chain. Don't memorize in isolation — understand the "why".</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📊</div>
+      <h4>Master map/filter/reduce</h4>
+      <p>These three cover most array manipulation problems in assignments. Know what each returns and how to chain them.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">⚡</div>
+      <h4>Prof's Rules to Remember</h4>
+      <p>Always use semicolons. Avoid <code>var</code>. Prefer <code>const</code> > <code>let</code>. Stick to English identifiers. Arrow functions for short callbacks.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>Made with focus by <strong>Yash Upadhyay</strong></div>
+  <div class="footer-links">
+    <a href="https://linkedin.com/in/yashupadhyay-yashord" target="_blank">🔗 LinkedIn</a>
+    <a href="https://instagram.com/yashord_" target="_blank">📸 Instagram</a>
+    <a href="mailto:yashupadhyaywork01@gmail.com">✉️ Email</a>
+    <a href="https://github.com/yashordK" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
+  </div>
+  <div style="margin-top: 12px; font-size: 0.78rem;">
+    MAD2 · IIT Madras BS Degree · Notes compiled from actual lecture transcripts
+  </div>
+</footer>
+
+</body>
+</html>
